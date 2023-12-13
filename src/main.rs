@@ -109,8 +109,8 @@ fn brute_force(filename: &str) -> i32 {
                         new_mirror_found = true;
                         break;
                     }
-
-                } else if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&temp_grid) {
+                } 
+                if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&temp_grid) {
                     if original_reflect_axis == Mirror::Vertical || original_reflect_value != num_of_rows_above_horizontal_line_of_reflection {
                         sum += num_of_rows_above_horizontal_line_of_reflection * 100;
                         new_mirror_found = true;
