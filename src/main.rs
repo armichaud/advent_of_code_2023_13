@@ -32,8 +32,8 @@ fn get_num_of_cols_left_of_vertical_line_of_reflection(grid: &DMatrix<char>) -> 
             left -= 1;
             right += 1;
         }
-        if left == -1 || right == grid.ncols() as i32 {
-            return Some(col as i32 - 1);
+        if left == -1 || (right == grid.ncols() as i32 && left != right - 1) {
+            return Some(col as i32 + 1);
         }
     }
     None
@@ -50,8 +50,8 @@ fn get_num_of_rows_above_horizontal_line_of_reflection(grid: &DMatrix<char>) -> 
             top -= 1;
             bottom += 1;
         }
-        if top == -1 || bottom == grid.nrows() as i32 {
-            return Some(row as i32 - 1);
+        if top == -1 || (bottom == grid.nrows() as i32 && top != bottom - 1) {
+            return Some(row as i32 + 1);
         }
     }
     None
@@ -61,7 +61,6 @@ fn solution(filename: &str) -> i32 {
     let grids: Vec<DMatrix<char>> = get_grids(filename);
     let mut sum = 0;
     for grid in grids {
-        // println!("{}", grid);
         if let Some(num_of_cols_left_of_vertical_line_of_reflection) = get_num_of_cols_left_of_vertical_line_of_reflection(&grid) {
             sum += num_of_cols_left_of_vertical_line_of_reflection;
         } else if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&grid) {
@@ -75,5 +74,5 @@ fn solution(filename: &str) -> i32 {
 
 fn main() {
     assert_eq!(solution("example.txt"), 405);
-    assert_eq!(solution("input.txt"), 0);
+    assert_eq!(solution("input.txt"), 33122);
 }
