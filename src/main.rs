@@ -1,7 +1,13 @@
 use nalgebra::DMatrix;
 
-// const ASH: char = '.';
-// const ROCK: char = '#';
+const ASH: char = '.';
+const ROCK: char = '#';
+
+#[derive(Debug, PartialEq)]
+enum Mirror {
+    Horizontal,
+    Vertical,
+}
 
 fn get_grids(filename: &str) -> Vec<DMatrix<char>> {
     let mut grids: Vec<DMatrix<char>> = Vec::new();
@@ -72,7 +78,57 @@ fn solution(filename: &str) -> i32 {
     sum
 }
 
+fn swap_tiles(tile: char) -> char {
+    if tile == ASH { ROCK } else { ASH }
+}
+
+fn brute_force(filename: &str) -> i32 {
+    let grids: Vec<DMatrix<char>> = get_grids(filename); 
+    let mut sum = 0;
+    for grid in grids {
+        let original_reflect_value: i32;
+        let original_reflect_axis: Mirror;
+        if let Some(num_of_cols_left_of_vertical_line_of_reflection) = get_num_of_cols_left_of_vertical_line_of_reflection(&grid) {
+            original_reflect_value = num_of_cols_left_of_vertical_line_of_reflection;
+            original_reflect_axis = Mirror::Vertical;
+        } else if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&grid) {
+            original_reflect_value = num_of_rows_above_horizontal_line_of_reflection;
+            original_reflect_axis = Mirror::Horizontal;
+        } else {
+            panic!("Invalid grid: {:?}", grid);
+        }
+
+        let mut new_mirror_found = false;
+        for i in 0..grid.nrows() {
+            for j in 0..grid.ncols() {
+                let mut temp_grid = grid.clone();
+                temp_grid[(i, j)] = swap_tiles(grid[(i, j)]);
+                if let Some(num_of_cols_left_of_vertical_line_of_reflection) = get_num_of_cols_left_of_vertical_line_of_reflection(&temp_grid) {
+                    if original_reflect_axis == Mirror::Horizontal || original_reflect_value != num_of_cols_left_of_vertical_line_of_reflection {
+                        sum += num_of_cols_left_of_vertical_line_of_reflection;
+                        new_mirror_found = true;
+                        break;
+                    }
+
+                } else if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&temp_grid) {
+                    if original_reflect_axis == Mirror::Vertical || original_reflect_value != num_of_rows_above_horizontal_line_of_reflection {
+                        sum += num_of_rows_above_horizontal_line_of_reflection * 100;
+                        new_mirror_found = true;
+                        break;
+                    }
+                } 
+            }
+            if new_mirror_found {
+                break;
+            }
+        }
+    }
+    sum
+}
+
 fn main() {
     assert_eq!(solution("example.txt"), 405);
     assert_eq!(solution("input.txt"), 33122);
+    assert_eq!(brute_force("example.txt"), 400);
+    assert_eq!(brute_force("input.txt"), 0); 
 }
