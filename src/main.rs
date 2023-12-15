@@ -40,7 +40,7 @@ fn get_num_of_cols_left_of_vertical_line_of_reflection(grid: &DMatrix<char>, ori
             left -= 1;
             right += 1;
         }
-        if left == -1 || right == grid.ncols() as i32 && (original_reflect_axis == Mirror::Horizontal || original_reflect_value != col) {
+        if (left == -1 || right == grid.ncols() as i32) && (original_reflect_axis == Mirror::Horizontal || original_reflect_value != col) {
             return Some(col as i32 + 1);
         }
     }
@@ -60,7 +60,7 @@ fn get_num_of_rows_above_horizontal_line_of_reflection(grid: &DMatrix<char>, ori
             top -= 1;
             bottom += 1;
         }
-        if top == -1 || bottom == grid.nrows() as i32 && (original_reflect_axis == Mirror::Vertical || original_reflect_value != row) {
+        if (top == -1 || bottom == grid.nrows() as i32) && (original_reflect_axis == Mirror::Vertical || original_reflect_value != row) {
             return Some(row as i32 + 1);
         }
     }
@@ -71,10 +71,10 @@ fn solution(filename: &str) -> i32 {
     let grids: Vec<DMatrix<char>> = get_grids(filename);
     let mut sum = 0;
     for grid in grids {
-        if let Some(num_of_cols_left_of_vertical_line_of_reflection) = get_num_of_cols_left_of_vertical_line_of_reflection(&grid, None, None) {
-            sum += num_of_cols_left_of_vertical_line_of_reflection;
-        } else if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&grid, None, None) {
-            sum += num_of_rows_above_horizontal_line_of_reflection * 100;
+        if let Some(n) = get_num_of_cols_left_of_vertical_line_of_reflection(&grid, None, None) {
+            sum += n;
+        } else if let Some(n) = get_num_of_rows_above_horizontal_line_of_reflection(&grid, None, None) {
+            sum += n * 100;
         } else {
             panic!("Invalid grid: {:?}", grid);
         }
@@ -92,11 +92,11 @@ fn brute_force(filename: &str) -> i32 {
     for grid in grids {
         let original_reflect_value: i32;
         let original_reflect_axis: Mirror;
-        if let Some(num_of_cols_left_of_vertical_line_of_reflection) = get_num_of_cols_left_of_vertical_line_of_reflection(&grid, None, None) {
-            original_reflect_value = num_of_cols_left_of_vertical_line_of_reflection - 1;
+        if let Some(n) = get_num_of_cols_left_of_vertical_line_of_reflection(&grid, None, None) {
+            original_reflect_value = n - 1;
             original_reflect_axis = Mirror::Vertical;
-        } else if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&grid, None, None) {
-            original_reflect_value = num_of_rows_above_horizontal_line_of_reflection - 1;
+        } else if let Some(n) = get_num_of_rows_above_horizontal_line_of_reflection(&grid, None, None) {
+            original_reflect_value = n - 1;
             original_reflect_axis = Mirror::Horizontal;
         } else {
             panic!("Invalid grid: {:?}", grid);
@@ -107,13 +107,13 @@ fn brute_force(filename: &str) -> i32 {
             for j in 0..grid.ncols() {
                 let mut temp_grid = grid.clone();
                 temp_grid[(i, j)] = swap_tiles(grid[(i, j)]);
-                if let Some(num_of_cols_left_of_vertical_line_of_reflection) = get_num_of_cols_left_of_vertical_line_of_reflection(&temp_grid, Some(original_reflect_value), Some(original_reflect_axis)) {
-                    sum += num_of_cols_left_of_vertical_line_of_reflection;
+                if let Some(n) = get_num_of_cols_left_of_vertical_line_of_reflection(&temp_grid, Some(original_reflect_value), Some(original_reflect_axis)) {
+                    sum += n;
                     new_mirror_found = true;
                     break;
                 } 
-                if let Some(num_of_rows_above_horizontal_line_of_reflection) = get_num_of_rows_above_horizontal_line_of_reflection(&temp_grid, Some(original_reflect_value), Some(original_reflect_axis)) {
-                    sum += num_of_rows_above_horizontal_line_of_reflection * 100;
+                if let Some(n) = get_num_of_rows_above_horizontal_line_of_reflection(&temp_grid, Some(original_reflect_value), Some(original_reflect_axis)) {
+                    sum += n * 100;
                     new_mirror_found = true;
                     break;
                 } 
