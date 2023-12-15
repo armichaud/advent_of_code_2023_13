@@ -133,5 +133,5 @@ fn main() {
     assert_eq!(solution("example.txt"), 405);
     assert_eq!(solution("input.txt"), 33122);
     assert_eq!(brute_force("example.txt"), 400);
-    assert_eq!(brute_force("input.txt"), 0); 
+    assert_eq!(brute_force("input.txt"), 32312); 
 }
