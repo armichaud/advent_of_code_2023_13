@@ -30,7 +30,7 @@ fn get_grids(filename: &str) -> Vec<DMatrix<char>> {
 fn get_num_of_cols_left_of_vertical_line_of_reflection(grid: &DMatrix<char>, original_reflect_value: Option<i32>, original_reflect_axis: Option<Mirror>) -> Option<i32> {
     let original_reflect_value = original_reflect_value.unwrap_or(-1);
     let original_reflect_axis = original_reflect_axis.unwrap_or(Mirror::Horizontal);
-    for col in 0..grid.ncols() as i32 {
+    for col in 0..grid.ncols() as i32 - 1 {
         let mut left = col;
         let mut right = col + 1;
         while left > -1 && right < grid.ncols() as i32 {
@@ -40,7 +40,7 @@ fn get_num_of_cols_left_of_vertical_line_of_reflection(grid: &DMatrix<char>, ori
             left -= 1;
             right += 1;
         }
-        if left == -1 || (right == grid.ncols() as i32 && left != right - 1) && (original_reflect_axis == Mirror::Horizontal || original_reflect_value != col) {
+        if left == -1 || right == grid.ncols() as i32 && (original_reflect_axis == Mirror::Horizontal || original_reflect_value != col) {
             return Some(col as i32 + 1);
         }
     }
@@ -50,7 +50,7 @@ fn get_num_of_cols_left_of_vertical_line_of_reflection(grid: &DMatrix<char>, ori
 fn get_num_of_rows_above_horizontal_line_of_reflection(grid: &DMatrix<char>, original_reflect_value: Option<i32>, original_reflect_axis: Option<Mirror>) -> Option<i32> {
     let original_reflect_value = original_reflect_value.unwrap_or(-1);
     let original_reflect_axis = original_reflect_axis.unwrap_or(Mirror::Vertical);
-    for row in 0..grid.nrows() as i32 {
+    for row in 0..grid.nrows() as i32 - 1 {
         let mut top = row;
         let mut bottom = row + 1;
         while top > -1 && bottom < grid.nrows() as i32 {
@@ -60,7 +60,7 @@ fn get_num_of_rows_above_horizontal_line_of_reflection(grid: &DMatrix<char>, ori
             top -= 1;
             bottom += 1;
         }
-        if top == -1 || (bottom == grid.nrows() as i32 && top != bottom - 1) && (original_reflect_axis == Mirror::Vertical || original_reflect_value != row) {
+        if top == -1 || bottom == grid.nrows() as i32 && (original_reflect_axis == Mirror::Vertical || original_reflect_value != row) {
             return Some(row as i32 + 1);
         }
     }
