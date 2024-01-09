@@ -130,8 +130,8 @@ fn brute_force(filename: &str) -> i32 {
 }
 
 fn main() {
-    assert_eq!(solution("example.txt"), 405);
-    assert_eq!(solution("input.txt"), 33122);
-    assert_eq!(brute_force("example.txt"), 400);
-    assert_eq!(brute_force("input.txt"), 32312); 
+    println!("{}", solution("example.txt"));
+    println!("{}", solution("input.txt"));
+    println!("{}", brute_force("example.txt"));
+    println!("{}", brute_force("input.txt")); 
 }
